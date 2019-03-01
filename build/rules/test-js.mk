@@ -13,11 +13,11 @@ test-syntax-js: $(JSHINT)
 
 .PHONY: test-js
 test-js: ## Run JS test suites (single run)
-test-js: $(js_deps) $(KARMA) js-templates test-syntax-js
+test-js: $(js_deps) $(KARMA) test-syntax-js
 	$(KARMA) start tests/js/karma.config.js --single-run
 
 test-js-debug: ## Run JS test suites and watch for changes
-test-js-debug: $(js_deps) $(KARMA) js-templates test-syntax-js
+test-js-debug: $(js_deps) $(KARMA) test-syntax-js
 	$(KARMA) start tests/js/karma.config.js
 
 $(KARMA): $(nodejs_deps)
