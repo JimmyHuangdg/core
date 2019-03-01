@@ -60,6 +60,17 @@ class MailNotificationFilter {
 				'filters' => [
 					['name' => 'StringTrim'],
 					['name' => 'StripTags'],
+					function ($address) {
+						$link = \parse_url($address);
+						$trustedDomains = \OC::$server->getConfig()->getSystemValue('trusted_domains');
+						foreach ($trustedDomains as $trustedDomain) {
+							if (\parse_url($trustedDomain)['host'] === $link['host']) {
+								return $address;
+							}
+						}
+
+						return '\invalid/';
+					}
 				],
 			],
 			'toAddress' => [
