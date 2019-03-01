@@ -87,6 +87,17 @@ Feature: auth
       | 1               |/privatedata/getattribute                        | 997      | 401       |
       | 2               |/privatedata/getattribute                        | 997      | 401       |
 
+  Scenario Outline: using OCS as normal user with wrong password
+    Given using OCS API version "<ocs_api_version>"
+    And user "user0" has added "https://aphno.badal" to the list of personal CORS domains
+    When user "user0" sends HTTP method "GET" to OCS API endpoint "<endpoint>" with headers
+    Then the OCS status code should be "<ocs-code>"
+    And the HTTP status code should be "<http-code>"
+    Examples:
+      | ocs_api_version |endpoint                                         | ocs-code | http-code |
+      | 1               |/apps/files_external/api/v1/mounts               | 100      | 200       |
+
+
   #merge into previous scenario when fixed
   @issue-34626
   Scenario Outline: using OCS as normal user with wrong password

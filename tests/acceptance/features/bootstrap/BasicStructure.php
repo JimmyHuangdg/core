@@ -767,6 +767,52 @@ trait BasicStructure {
 	}
 
 	/**
+	 * @Given user :user has added :domain to the list of personal CORS domains
+	 * @param string $user
+	 * @param string $domain
+	 */
+	public function addDomainToPrivateCORSLists($user, $domain) {
+		$this->runOcc(
+			[
+				'user:setting',
+				$user,
+				'core',
+				'domains'
+			]
+		);
+		$domains = \json_decode($this->lastStdOut);
+		$domains[] = $domain;
+		$valueString = \json_encode($domains);
+
+		$this->runOcc(
+			[
+				'user:setting',
+				$user,
+				'core',
+				'domains',
+				'--value=\'' . $valueString . '\''
+				
+			]
+		);
+		if ($this->lastCode !== 0) {
+			throw new \Exception("could not set CORS domain. " . $this->lastStdErr);
+		}
+		//double check if it was set
+		$this->runOcc(
+			[
+				'user:setting',
+				$user,
+				'core',
+				'domains'
+			]
+		);
+		$domains = \json_decode($this->lastStdOut);
+		PHPUnit_Framework_Assert::assertContains(
+			$domain, $domains, "CORS domain was not added correctly"
+		);
+	}
+
+	/**
 	 * @When /^the user sends HTTP method "([^"]*)" to OCS API endpoint "([^"]*)"$/
 	 * @Given /^the user has sent HTTP method "([^"]*)" to OCS API endpoint "([^"]*)"$/
 	 *
